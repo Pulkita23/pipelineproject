@@ -1,0 +1,42 @@
+pipeline {
+    agent any
+
+    environment {
+        NOTIFY_EMAIL = 'team@example.com'
+    }
+
+    stages {
+        stage('Checkout') {
+            steps {
+                echo 'Checking out code...'
+                checkout scm
+            }
+        }
+
+        stage('Build') {
+            steps {
+                echo 'Building project...'
+                sh 'echo "Simulating build process..."'
+                // Example: sh 'npm install' or 'mvn clean install'
+            }
+        }
+
+        stage('Notify') {
+            steps {
+                echo "Notifying team..."
+                mail to: "${NOTIFY_EMAIL}",
+                     subject: "Build Successful",
+                     body: "The Jenkins pipeline build was successful!"
+            }
+        }
+    }
+
+    post {
+        failure {
+            mail to: "${NOTIFY_EMAIL}",
+                 subject: "Build Failed",
+                 body: "The Jenkins pipeline build has failed."
+        }
+    }
+}
+
